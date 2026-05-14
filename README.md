@@ -9,12 +9,13 @@ Antes de iniciar qualquer configuração de software, a rede física deve estar 
 | 🖥️ Equipamento / Usuário | ⚙️ Função | 🌐 Endereço IP | 🔧 Configuração |
 | :--- | :--- | :--- | :--- |
 | **Modem Principal** | Gateway, DNS e DHCP | `192.168.1.1` | Roteador Borda |
+| **Switch** | Conectar computadores principais | `192.168.1.253` | IP Estático (Manual)/ DCHP Desable |
 | **PC da TI (Windows)** | Estação de Administração | `192.168.1.10` | IP Estático (Manual) |
 | **Celular da TI** | Acesso Administrativo | `192.168.1.11` | IP Estático (Manual) |
 | **ESP32 (Temperatura)** | Móvel Sensor Térmico | `192.168.1.20` | IP Estático (Código Python) |
 | **ESP32 (Botão)** | Acionador Físico | `192.168.1.21` | IP Estático (Código Python) |
 | **Servidor Ubuntu** | Web, API, BD e NAS | `192.168.1.50` | IP Estático (Manual) |
-| **Professores / Alunos** | Usuários comuns da Rede | `192.168.1.100` a `200` | DHCP Dinâmico |
+| **Professores / Alunos** | Usuários comuns da Rede | `192.168.1.100` a `252` | DHCP Dinâmico |
 
 DHCP Dinâmico
 
@@ -86,24 +87,40 @@ python3 app.py
 
 💡 A API rodará na porta 5000 e criará automaticamente o banco de dados banco_ti.db.
 
-🛠️ 3.2. Build do Frontend
+### 🛠️ 3.2. Build, Transferência e Extração do Frontend (React)
 
-Caso esteja rodando o projeto em uma VM: baixe o documento com o Frontend (dist) e mova para o servidor NAS acessado pelo Windows.
+Como projetos em React geram uma grande quantidade de arquivos na versão final, a melhor prática é empacotar tudo antes de enviar ao servidor para evitar lentidão ou corrupção na transferência.
 
-🌐 3.3. Configurando o Servidor Web SPA (Linux)
+**Passo 1: Gerar o Build e Compactar (No ambiente de Desenvolvimento)**
+1. No terminal do seu projeto React, rode o comando para gerar os arquivos otimizados de produção:
+   ```bash
+   npm run build
 
-Mova os arquivos de produção Frontend (dist) para a raiz web do Linux:
+**Passo2: Transferência para o Servidor Linux**
+Mova o arquivo frontend_dist.zip para dentro do Servidor Ubuntu. Você pode fazer isso simplesmente copiando e colando o arquivo na pasta compartilhada do NAS pelo Windows (\\192.168.1.50\Arquivos_TI).
+
+**Passo3: Descompactação no Terminal Linux**
+Acesse o terminal do Servidor Ubuntu, instale o pacote unzip (caso não tenha) e descompacte o arquivo no diretório temporário do seu usuário:
+
+sudo apt install unzip -y
+cd /mnt/NAS_Seguro
+unzip frontend_dist.zip -d /tmp/
+
+### 🌐 3.5 Configurando o Servidor Web SPA (Linux)
+
+**Movendo os arquivos para a raiz web do Linux:**
 
 sudo mkdir -p /var/www/painel_ti
-sudo cp -r /caminho/da/sua/pasta/dist/. /var/www/painel_ti/
+sudo cp -r /tmp/dist/. /var/www/painel_ti/
 
-
-Crie o arquivo do Servidor Web focado em SPA (Single Page Application):
+**Criação e Execução do Servidor Web**
+Crie o arquivo do Servidor Web focado em lidar com as rotas do React:
 
 sudo nano /var/www/painel_ti/servidor_web.py
 
+(Adicione o código Python de roteamento SPA dentro deste arquivo, salve e execute o script para colocar o site no ar).
 
-📟 4. Configuração dos Dispositivos IoT (ESP32)
+### 📟 4. Configuração dos Dispositivos IoT (ESP32)
 
 Para cada módulo ESP32 (Sensor de Temperatura e Botão), certifique-se de configurar a rede de forma estática no código-fonte em MicroPython/C++ antes do deploy:
 
@@ -125,10 +142,10 @@ estacao.connect(WIFI_SSID, WIFI_SENHA)
 
 Após todos os serviços estarem iniciados, os acessos seguem o seguinte padrão:
 
-🛠️ Painel de Suporte (Técnicos): http://192.168.1.50 (Login obrigatório)
+🛠️ Painel de Suporte (Técnicos): http://192.168.1.50 (Login obrigatório) # user: admin | senha: admin123
 
-👨‍🏫 Portal do Docente (Abertura de Chamados): http://192.168.1.50/professor (Login obrigatório)
+👨‍🏫 Portal do Docente (Abertura de Chamados): http://192.168.1.50/professor (Login obrigatório) # cadastro via painel de suporte da TI
 
-📁 Servidor de Arquivos (NAS): \\192.168.1.50
+📁 Servidor de Arquivos (NAS): \\192.168.1.50 # user: tecnico_TI | senha: Admin123
 
 (Acesso pelo Windows. Apenas computadores e celulares da TI com IPs .10 e .11 conseguem visualizar a porta, mediante usuário/senha).
