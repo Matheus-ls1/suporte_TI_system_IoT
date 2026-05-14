@@ -6,67 +6,15 @@ Este documento descreve o passo a passo para configurar, compilar e executar o a
 
 Antes de iniciar qualquer configuração de software, a rede física deve estar conectada e configurada conforme a tabela abaixo, garantindo a Separação Lógica exigida pelo escopo:
 
-🖥️ Equipamento / Usuário
-
-⚙️ Função
-
-🌐 Endereço IP
-
-🔧 Configuração
-
-Modem Principal
-
-Gateway, DNS e DHCP
-
-192.168.1.1
-
-Roteador Borda
-
-PC da TI (Windows)
-
-Estação de Administração
-
-192.168.1.10
-
-IP Estático (Manual)
-
-Celular da TI
-
-Acesso Administrativo
-
-192.168.1.11
-
-IP Estático (Manual)
-
-ESP32 (Temperatura)
-
-Móvel Sensor Térmico
-
-192.168.1.20
-
-IP Estático (Código Python)
-
-ESP32 (Botão)
-
-Acionador Físico
-
-192.168.1.21
-
-IP Estático (Código Python)
-
-Servidor Ubuntu
-
-Web, API, BD e NAS
-
-192.168.1.50
-
-IP Estático (Manual)
-
-Professores / Alunos
-
-Usuários comuns da Rede
-
-192.168.1.100 a 200
+| 🖥️ Equipamento / Usuário | ⚙️ Função | 🌐 Endereço IP | 🔧 Configuração |
+| :--- | :--- | :--- | :--- |
+| **Modem Principal** | Gateway, DNS e DHCP | `192.168.1.1` | Roteador Borda |
+| **PC da TI (Windows)** | Estação de Administração | `192.168.1.10` | IP Estático (Manual) |
+| **Celular da TI** | Acesso Administrativo | `192.168.1.11` | IP Estático (Manual) |
+| **ESP32 (Temperatura)** | Móvel Sensor Térmico | `192.168.1.20` | IP Estático (Código Python) |
+| **ESP32 (Botão)** | Acionador Físico | `192.168.1.21` | IP Estático (Código Python) |
+| **Servidor Ubuntu** | Web, API, BD e NAS | `192.168.1.50` | IP Estático (Manual) |
+| **Professores / Alunos** | Usuários comuns da Rede | `192.168.1.100` a `200` | DHCP Dinâmico |
 
 DHCP Dinâmico
 
